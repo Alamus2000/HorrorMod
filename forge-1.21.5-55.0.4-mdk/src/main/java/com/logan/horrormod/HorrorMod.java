@@ -1,68 +1,71 @@
 package com.logan.horrormod;
 
-import com.mojang.logging.LogUtils;
+import com.logan.horrormod.network.ModMessages;
+import com.logan.horrormod.network.OpenSanityGuiPacket;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.slf4j.Logger;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraft.commands.Commands;
+import net.minecraft.server.level.ServerPlayer;
 
-
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod(HorrorMod.MOD_ID)
 public class HorrorMod {
-    // Define mod id in a common place for everything to reference
     public static final String MOD_ID = "horrormod";
-    // Directly reference a slf4j logger
-    public static final Logger LOGGER = LogUtils.getLogger();
 
     public HorrorMod(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
-        // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
+        // Register the mod's event bus to let Forge discover our methods
+        modEventBus.addListener(this::addCreative);
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
-
-        // Register the item to a creative tab
-        modEventBus.addListener(this::addCreative);
-        // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
-        context.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
-
+        ModMessages.register();  // Ensure messages are registered here
     }
 
 
-    // Add the example block item to the building blocks tab
-    private void addCreative(BuildCreativeModeTabContentsEvent event) {
-
-    }
-
-    // You can use SubscribeEvent and let the Event Bus discover methods to call
+    // Register command and handle it when executed
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
+        event.getServer().getCommands().getDispatcher().register(
+                Commands.literal("sanity")
+                        .requires(source -> source.hasPermission(0)) // Permission level 0 = all players
+                        .executes(context -> {
+                            // Server-side: send a packet to the client to open the GUI
+                            ServerPlayer player = context.getSource().getPlayerOrException();
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("Opening Sanity GUI..."));
 
+                            // Send packet to client (you'll define this next)
+                            ModMessages.sendToPlayer(
+                                    new OpenSanityGuiPacket(), // The packet to be sent
+                                    player // The player to send the packet to
+                            );
+
+                            return 1;
+                        })
+        );
     }
 
-    // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
+    // Add to creative tab if necessary
+    private void addCreative(BuildCreativeModeTabContentsEvent event) {
+        // This can be left empty if not needed
+    }
+
+    // Register the client setup method for registering clients-side features (optional)
     @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
-
+            // Client setup code goes here
         }
     }
 }
-
-
