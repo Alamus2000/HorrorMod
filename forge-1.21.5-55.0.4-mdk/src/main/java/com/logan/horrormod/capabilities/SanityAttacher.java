@@ -5,20 +5,21 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
 @Mod.EventBusSubscriber(modid = HorrorMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class SanityAttacher {
 
+    public static final ResourceLocation SANITY_ID = ResourceLocation.fromNamespaceAndPath(HorrorMod.MOD_ID, "sanity");
+
     @SubscribeEvent
-    public static void onAttachCapabilities(AttachCapabilitiesEvent<Player> event) {
-        // Check if the sanity capability is already attached
-        if (!event.getObject().getCapability(SanityCapability.SANITY).isPresent()) {
-            // Attach the capability
-            event.addCapability(
-                    ResourceLocation.tryParse(HorrorMod.MOD_ID + ":sanity"),
-                    new SanityProvider()
-            );
+    public static void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event) {
+        if (event.getObject() instanceof Player player) {
+            // Only attach if not already present
+            if (!player.getCapability(SanityCapability.SANITY).isPresent()) {
+                event.addCapability(SANITY_ID, new SanityProvider());
+            }
         }
     }
 }

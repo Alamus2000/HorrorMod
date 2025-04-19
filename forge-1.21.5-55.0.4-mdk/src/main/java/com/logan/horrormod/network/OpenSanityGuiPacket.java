@@ -5,7 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 
-
 public class OpenSanityGuiPacket {
 
     public OpenSanityGuiPacket() {
@@ -16,13 +15,13 @@ public class OpenSanityGuiPacket {
     }
 
     public void toBytes(FriendlyByteBuf buf) {
-        // No data
+        // No data to write
     }
 
     public static void handle(OpenSanityGuiPacket message, CustomPayloadEvent.Context context) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null) {
-            mc.setScreen(new SanityGUI(mc.player));
+            mc.setScreen(new SanityGUI(mc.player)); // Open the Sanity GUI
         }
     }
 }

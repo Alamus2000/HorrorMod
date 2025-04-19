@@ -1,18 +1,10 @@
 package com.logan.horrormod.capabilities;
 
-import net.minecraftforge.common.capabilities.AutoRegisterCapability;
-
-@AutoRegisterCapability
 public interface ISanity {
-    int getSanity();
-    void setSanity(int amount);
-
-    default void addSanity(int amount) {
-        setSanity(getSanity() + amount);
-    }
-
-    default void reduceSanity(int amount) {
-        setSanity(getSanity() - amount);
-    }
+    int getSanity();  // Must return an int
+    void setSanity(int amount);  // Accepts an int
+    void addSanity(int amount);
+    void reduceSanity(int amount);
 }
+
 
