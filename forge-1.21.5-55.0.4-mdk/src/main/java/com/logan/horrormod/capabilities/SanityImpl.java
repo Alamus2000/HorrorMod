@@ -10,17 +10,19 @@ public class SanityImpl implements ISanity {
 
     @Override
     public void setSanity(int sanity) {
-        this.sanity = Math.max(0, Math.min(100, sanity)); // Clamp between 0 and 100
+        // Clamping the sanity value directly here
+        this.sanity = Math.max(0, Math.min(100, sanity));
     }
 
     @Override
     public void addSanity(int amount) {
-        setSanity(sanity + amount);
+        // Simply modify sanity and clamp in setSanity
+        setSanity(this.sanity + amount);
     }
 
     @Override
     public void reduceSanity(int amount) {
-        setSanity(sanity - amount);
+        // Simply modify sanity and clamp in setSanity
+        setSanity(this.sanity - amount);
     }
 }
-

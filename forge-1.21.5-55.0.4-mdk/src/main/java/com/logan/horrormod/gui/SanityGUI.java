@@ -1,19 +1,20 @@
 package com.logan.horrormod.gui;
 
 import com.logan.horrormod.capabilities.SanityCapability;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class SanityGUI extends Screen {
 
     private final Player player;
 
     public SanityGUI(Player player) {
-        super(Component.literal("Sanity GUI")); // Using Component.literal instead of TextComponent
+        super(Component.literal("Sanity GUI"));
         this.player = player;
     }
 
@@ -21,34 +22,40 @@ public class SanityGUI extends Screen {
     protected void init() {
         super.init();
 
-        // Create buttons for increasing and decreasing sanity using Button.builder()
-        this.addRenderableWidget(Button.builder(Component.literal("Increase"), (button) -> {
+        // Add buttons to increase and decrease sanity
+        this.addRenderableWidget(Button.builder(Component.literal("Increase Sanity"), (button) -> {
+            // Increase sanity by 5
             player.getCapability(SanityCapability.SANITY).ifPresent(sanity -> {
-                sanity.addSanity(5); // Increase sanity by 5
+                sanity.addSanity(5);
             });
         }).bounds(this.width / 2 - 50, this.height / 2 - 10, 100, 20).build());
 
-        this.addRenderableWidget(Button.builder(Component.literal("Decrease"), (button) -> {
+        this.addRenderableWidget(Button.builder(Component.literal("Decrease Sanity"), (button) -> {
+            // Decrease sanity by 5
             player.getCapability(SanityCapability.SANITY).ifPresent(sanity -> {
-                sanity.reduceSanity(5); // Decrease sanity by 5
+                sanity.reduceSanity(5);
             });
-        }).bounds(this.width / 2 - 50, this.height / 2 + 20, 100, 20).build());
+        }).bounds(this.width / 2 - 50, this.height / 2 + 30, 100, 20).build());
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(poseStack); // Render the background using PoseStack
-        super.render(poseStack, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
 
-        // Render the player's sanity level
-        String sanityText = "Sanity Level: " + player.getCapability(SanityCapability.SANITY).map(sanity -> sanity.getSanity()).orElse(0);
+        // Get current sanity level
+        String sanityText = "Sanity Level: " + player.getCapability(SanityCapability.SANITY)
+                .map(sanity -> sanity.getSanity())
+                .orElse(0);
 
-        // Draw the text at a specific position using the font renderer
-        Minecraft.getInstance().font.draw(poseStack, sanityText, this.width / 2, this.height / 2 - 40);
+        // Center the text horizontally
+        int x = this.width / 2 - this.font.width(sanityText) / 2;
+
+        // Draw the text (display sanity level)
+        graphics.drawString(this.font, sanityText, x, this.height / 2 - 40, 0xFFFFFF);
     }
 
     @Override
     public boolean isPauseScreen() {
-        return false; // Don't pause the game when the screen is opened
+        return false; // Don't pause the game when the GUI is open
     }
 }

@@ -14,10 +14,12 @@ public class SanityAttachHandler {
 
     @SubscribeEvent
     public static void onAttachCapabilities(AttachCapabilitiesEvent<Player> event) {
-        // Check if sanity is already attached (optional)
+        // Check if sanity is already attached
         if (!event.getObject().getCapability(SanityCapability.SANITY).isPresent()) {
+            // Add the capability
             event.addCapability(ID, new SanityProvider());
+            // Log the event for debugging
+            System.out.println("Sanity capability attached to player: " + event.getObject().getName().getString());
         }
     }
 }
-
