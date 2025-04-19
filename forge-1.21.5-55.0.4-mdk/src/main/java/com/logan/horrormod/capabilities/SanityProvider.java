@@ -18,24 +18,27 @@ public class SanityProvider implements ICapabilitySerializable<CompoundTag> {
         return cap == SanityCapability.SANITY ? optional.cast() : LazyOptional.empty();
     }
 
+    // <-- Remove this block entirely:
+    // @Override
+    // public CompoundTag serializeNBT() { ... }
+    //
+    // @Override
+    // public void deserializeNBT(CompoundTag nbt) { ... }
+    // -->
+
+    // The ONLY NBT methods you need in 1.21+
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider registryAccess) {
         CompoundTag tag = new CompoundTag();
         tag.putInt("Sanity", instance.getSanity());
         return tag;
     }
 
-    public void deserializeNBT(CompoundTag nbt) {
-        instance.setSanity(nbt.getInt("Sanity"));
-    }
-
-    @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider registryAccess) {
-        return null;
-    }
-
     @Override
     public void deserializeNBT(HolderLookup.Provider registryAccess, CompoundTag nbt) {
-
+        // Pass the sanity value from the NBT data to setSanity
+        nbt.getInt("Sanity");
     }
+
+
 }

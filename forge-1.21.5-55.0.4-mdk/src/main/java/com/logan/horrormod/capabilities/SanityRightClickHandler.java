@@ -17,7 +17,7 @@ public class SanityRightClickHandler {
     @SubscribeEvent
     public static void onRightClickEvent(PlayerInteractEvent.RightClickBlock event) {
         // Get the player who triggered the event
-        Player player = (Player) event.getEntity();  // Cast the entity to Player
+        Player player = event.getEntity();  // Get the player from the event
 
         // Check if the sanity capability is attached
         player.getCapability(SanityCapability.SANITY).ifPresent(sanity -> {
@@ -26,6 +26,9 @@ public class SanityRightClickHandler {
 
             // Example action: Reduce sanity by 1 when player right-clicks a block
             sanity.reduceSanity(1);
+
+            // Log the updated sanity
+            System.out.println("Sanity after reduction: " + sanity.getSanity());
         });
     }
 
@@ -33,7 +36,7 @@ public class SanityRightClickHandler {
     @SubscribeEvent
     public static void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
         // Get the player who triggered the event
-        Player player = (Player) event.getEntity();  // Cast the entity to Player
+        Player player = event.getEntity();  // Get the player directly
 
         // Check if the sanity capability is attached
         player.getCapability(SanityCapability.SANITY).ifPresent(sanity -> {
@@ -42,6 +45,10 @@ public class SanityRightClickHandler {
 
             // Example action: Reduce sanity by 1 when player right-clicks an item
             sanity.reduceSanity(1);
+
+            // Log the updated sanity
+            System.out.println("Sanity after reduction: " + sanity.getSanity());
         });
     }
 }
+
