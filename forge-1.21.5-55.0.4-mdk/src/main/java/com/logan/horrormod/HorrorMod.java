@@ -1,5 +1,6 @@
 package com.logan.horrormod;
 
+import com.logan.horrormod.client.ClientSanityEffects;
 import com.logan.horrormod.network.ModMessages;
 import com.logan.horrormod.network.OpenSanityGuiPacket;
 import net.minecraftforge.api.distmarker.Dist;
@@ -14,6 +15,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
 
+import static com.mojang.text2speech.Narrator.LOGGER;
+
 @Mod(HorrorMod.MOD_ID)
 public class HorrorMod {
     public static final String MOD_ID = "horrormod";
@@ -25,6 +28,7 @@ public class HorrorMod {
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -33,7 +37,7 @@ public class HorrorMod {
 
 
     private void clientSetup(final FMLClientSetupEvent event) {
-        // Add client-side setup here (e.g., keybindings, rendering, etc.)
+        LOGGER.info("Client setup completed.");
     }
 
 }
