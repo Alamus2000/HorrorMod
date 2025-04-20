@@ -34,7 +34,7 @@ public class SanityEventHandler {
                     player.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 150, 2));
                 }
                 if (!player.hasEffect(MobEffects.BLINDNESS)) {
-                    player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 75, 1));
+                    player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100, 1));
                 }
 
             } else if (currentSanity <= 0) {
