@@ -1,9 +1,11 @@
 package com.logan.horrormod.events;
-
+import com.logan.horrormod.network.ModMessages;
+import com.logan.horrormod.network.SyncSanityPacket;
 import com.logan.horrormod.capabilities.SanityCapability;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -19,7 +21,29 @@ public class SanityEventHandler {
 
         ServerPlayer player = (ServerPlayer) event.player;
         Minecraft mc = Minecraft.getInstance();
-        ClientLevel level = mc.level;
+        Level level = player.level();
+
+        player.getCapability(SanityCapability.SANITY).ifPresent(sanity -> {
+            if (player.tickCount % 60 == 0) { // every 2 seconds
+
+                BlockPos pos = player.blockPosition();
+                int light = level.getMaxLocalRawBrightness(pos);
+
+                int current = sanity.getSanity();
+                int newSanity = current;
+
+                if (light < 6) {
+                    newSanity = Math.max(0, current - 1); // too dark, lose sanity
+                } else if (light > 12) {
+                    newSanity = Math.min(100, current + 1); // bright area, regain sanity
+                }
+
+                if (newSanity != current) {
+                    sanity.setSanity(newSanity);
+                    ModMessages.sendToPlayer(new SyncSanityPacket(newSanity), player); // ✅
+                }
+            }
+        });
 
         player.getCapability(SanityCapability.SANITY).ifPresent(sanity -> {
             int currentSanity = sanity.getSanity();
