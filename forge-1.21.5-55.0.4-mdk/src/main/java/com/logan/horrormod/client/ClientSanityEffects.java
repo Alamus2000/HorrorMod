@@ -2,6 +2,7 @@ package com.logan.horrormod.client;
 
 import com.logan.horrormod.capabilities.SanityCapability;
 import com.logan.horrormod.client.entity.HallucinationZombie;
+import com.logan.horrormod.network.SoundEventsRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.multiplayer.ClientLevel;

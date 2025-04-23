@@ -1,5 +1,6 @@
 package com.logan.horrormod.events;
 import com.logan.horrormod.network.ModMessages;
+import com.logan.horrormod.network.SoundEventsRegistry;
 import com.logan.horrormod.network.SyncSanityPacket;
 import com.logan.horrormod.capabilities.SanityCapability;
 import net.minecraft.client.Minecraft;
@@ -14,6 +15,7 @@ import net.minecraft.world.effect.MobEffects;
 
 @Mod.EventBusSubscriber
 public class SanityEventHandler {
+    private static final java.util.Random RANDOM = new java.util.Random();
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
@@ -40,16 +42,26 @@ public class SanityEventHandler {
 
                 if (newSanity != current) {
                     sanity.setSanity(newSanity);
-                    ModMessages.sendToPlayer(new SyncSanityPacket(newSanity), player); // ✅
+                    ModMessages.sendToPlayer(new SyncSanityPacket(newSanity), player);
                 }
             }
         });
 
         player.getCapability(SanityCapability.SANITY).ifPresent(sanity -> {
             int currentSanity = sanity.getSanity();
-
+            if (player.tickCount % 60 == 0) {
+                // Lower sanity, more chance of whispers
+                if (currentSanity <= 40 && currentSanity >= 25 &&  RANDOM.nextFloat() < 0.03f) {  // 3% chance
+                    System.out.println("Playing Sound");
+                    player.playSound(SoundEventsRegistry.WHISPERING1.get(), 1.0f, 0.8f + RANDOM.nextFloat() * 0.4f);
+                }
+                if (currentSanity <= 25 && RANDOM.nextFloat() < 0.3f) {
+                    System.out.println("Playing Sound");
+                    player.playSound(SoundEventsRegistry.WHISPERING1.get(), 1.0f, 0.8f + RANDOM.nextFloat() * 0.4f);
+                }
+            }
             // Example effects based on sanity levels
-            if (currentSanity < 75 && currentSanity > 50) {
+            if (currentSanity <= 75 && currentSanity >= 50) {
                 // Maybe minor screen flicker, background sounds, or nothing
             } else if (currentSanity <= 50 && currentSanity > 35) {
 

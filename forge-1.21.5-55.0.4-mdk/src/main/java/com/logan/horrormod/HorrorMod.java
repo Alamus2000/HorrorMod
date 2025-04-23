@@ -3,6 +3,7 @@ package com.logan.horrormod;
 import com.logan.horrormod.client.ClientSanityEffects;
 import com.logan.horrormod.network.ModMessages;
 import com.logan.horrormod.network.OpenSanityGuiPacket;
+import com.logan.horrormod.network.SoundEventsRegistry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -28,6 +29,8 @@ public class HorrorMod {
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+        SoundEventsRegistry.register(modEventBus);
+
 
     }
 
