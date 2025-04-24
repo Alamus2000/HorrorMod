@@ -49,13 +49,13 @@ public class SanityEventHandler {
 
         player.getCapability(SanityCapability.SANITY).ifPresent(sanity -> {
             int currentSanity = sanity.getSanity();
-            if (player.tickCount % 60 == 0) {
+            if (player.tickCount % 300 == 0) {
                 // Lower sanity, more chance of whispers
-                if (currentSanity <= 40 && currentSanity >= 25 &&  RANDOM.nextFloat() < 0.03f) {  // 3% chance
+                if (currentSanity <= 40 && currentSanity > 25 &&  RANDOM.nextFloat() < 0.03f) {  // 3% chance
                     System.out.println("Playing Sound");
                     player.playSound(SoundEventsRegistry.WHISPERING1.get(), 1.0f, 0.8f + RANDOM.nextFloat() * 0.4f);
                 }
-                if (currentSanity <= 25 && RANDOM.nextFloat() < 0.3f) {
+                else if (currentSanity <= 25 && RANDOM.nextFloat() < 0.3f) {
                     System.out.println("Playing Sound");
                     player.playSound(SoundEventsRegistry.WHISPERING1.get(), 1.0f, 0.8f + RANDOM.nextFloat() * 0.4f);
                 }

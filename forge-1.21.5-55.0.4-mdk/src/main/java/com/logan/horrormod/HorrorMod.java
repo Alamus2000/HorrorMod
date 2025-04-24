@@ -1,9 +1,13 @@
 package com.logan.horrormod;
 
+import com.logan.horrormod.item.ModItems;
+
+import com.logan.horrormod.block.ModBlocks;
 import com.logan.horrormod.client.ClientSanityEffects;
 import com.logan.horrormod.network.ModMessages;
 import com.logan.horrormod.network.OpenSanityGuiPacket;
 import com.logan.horrormod.network.SoundEventsRegistry;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -15,13 +19,14 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import static com.mojang.text2speech.Narrator.LOGGER;
 
 @Mod(HorrorMod.MOD_ID)
 public class HorrorMod {
     public static final String MOD_ID = "horrormod";
-
     public HorrorMod(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
         modEventBus.addListener(this::commonSetup);
@@ -30,12 +35,14 @@ public class HorrorMod {
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
         SoundEventsRegistry.register(modEventBus);
-
+        ModItems.register(modEventBus);
+        ModBlocks.register(modEventBus);
 
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
         ModMessages.register();
+
     }
 
 

@@ -2,7 +2,6 @@ package com.logan.horrormod.client;
 
 import com.logan.horrormod.capabilities.SanityCapability;
 import com.logan.horrormod.client.entity.HallucinationZombie;
-import com.logan.horrormod.network.SoundEventsRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -35,10 +34,6 @@ public class ClientSanityEffects {
     private static final List<HallucinationMimic> activeMimics = new ArrayList<>();
 
 
-
-
-
-
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent event) {
         if (event.phase != ClientTickEvent.Phase.END) return;
@@ -52,18 +47,18 @@ public class ClientSanityEffects {
         player.getCapability(SanityCapability.SANITY).ifPresent(sanity -> {
             int currentSanity = ClientSanityData.get();
             if (currentSanity <= 15) {
-                if (player.tickCount % 100 == 0 && RANDOM.nextFloat() <= 0.25f) {
+                if (player.tickCount % 750 == 0 && RANDOM.nextFloat() <= 0.20f) {
                     System.out.println("Spawning fake zombie hallucination");
                     spawnFakeZombie(level, player);
                 }
             }
             if (currentSanity <= 10) {
-                if (player.tickCount % 100 == 0 && RANDOM1.nextFloat() <= 0.25f) {
+                if (player.tickCount % 750 == 0 && RANDOM1.nextFloat() <= 0.20f) {
                     System.out.println("Spawning fake player hallucination");
                     spawnFakeMimic(level, player);
                 }
             }
-            if (currentSanity <= 5 && player.tickCount % 200 == 0 && activeMimics.isEmpty() && RANDOM2.nextFloat() <= 0.20f) {
+            if (currentSanity <= 5 && player.tickCount % 750 == 0 && activeMimics.isEmpty() && RANDOM2.nextFloat() <= 0.10f) {
                 System.out.println("Spawning fake players hallucination");
                 spawnMimics(level, player, 6); // Spawn 6 around the player
             }
