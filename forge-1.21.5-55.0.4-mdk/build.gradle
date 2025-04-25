@@ -125,7 +125,7 @@ dependencies {
     // The "userdev" classifier will be requested and setup by ForgeGradle.
     // If the group id is "net.minecraft" and the artifact id is one of ["client", "server", "joined"],
     // then special handling is done to allow a setup of a vanilla dependency without the use of an external repository.
-    minecraft 'net.minecraftforge:forge:1.21.5-55.0.4'
+    minecraft "net.minecraftforge:forge:1.21.5-55.0.9"
 
     // Example mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
@@ -171,7 +171,7 @@ tasks.named('jar', Jar).configure {
             'Specification-Version'   : '1', // We are version 1 of ourselves
             'Implementation-Title'    : project.name,
             'Implementation-Version'  : project.jar.archiveVersion,
-            'Implementation-Vendor'   : mod_authors
+            'Implementation-Vendor'   : mod_authors,
         ])
     }
 }
