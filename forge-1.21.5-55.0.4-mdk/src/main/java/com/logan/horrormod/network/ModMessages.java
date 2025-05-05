@@ -1,41 +1,52 @@
 package com.logan.horrormod.network;
 
-import net.minecraft.network.FriendlyByteBuf;
+import com.logan.horrormod.capabilities.SanityCapability;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.*;
 import net.minecraft.resources.ResourceLocation;
-
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import net.minecraftforge.network.*;
 
 public class ModMessages {
     private static final int PROTOCOL_VERSION = 1;
-
     public static final SimpleChannel INSTANCE = ChannelBuilder
-            .named(ResourceLocation.fromNamespaceAndPath("horrormod", "main_channel"))
-            .networkProtocolVersion(PROTOCOL_VERSION)                      // ← int here
-            .acceptedVersions(Channel.VersionTest.exact(PROTOCOL_VERSION))        // ← same VersionTest on both sides
+            .named(ResourceLocation.fromNamespaceAndPath("horrormod","main_channel"))
+            .networkProtocolVersion(PROTOCOL_VERSION)
+            .acceptedVersions(Channel.VersionTest.exact(PROTOCOL_VERSION))
             .simpleChannel();
 
-    private static int packetId = 0;
+    public static int packetId = 0;
 
-    public static void register() {
-        INSTANCE.messageBuilder(OpenSanityGuiPacket.class, packetId++, NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(OpenSanityGuiPacket::toBytes)
-                .decoder(OpenSanityGuiPacket::newPacket)
-                .consumerMainThread(OpenSanityGuiPacket::handle)
-                .add();
-
+    /** Call this from your FMLCommonSetupEvent */
+    public static void registerCommon() {
+        //client → server: SanityChangePacket
         INSTANCE.messageBuilder(SanityChangePacket.class, packetId++, NetworkDirection.PLAY_TO_SERVER)
                 .encoder(SanityChangePacket::encode)
                 .decoder(SanityChangePacket::decode)
-                .consumerMainThread(SanityChangePacket::handle)
+                .consumerMainThread((msg, ctx) -> {
+                    ctx.enqueueWork(() -> {
+                        ServerPlayer player = ctx.getSender();
+                        if (player == null) return;
+                        player.getCapability(SanityCapability.SANITY).ifPresent(sanity -> {
+                            if (msg.delta > 0) sanity.addSanity(msg.delta);
+                            else sanity.reduceSanity(Math.abs(msg.delta));
+                            // Sync back
+                            int newVal = sanity.getSanity();
+                            INSTANCE.send(
+                                    new SyncSanityPacket(newVal),
+                                    PacketDistributor.PLAYER.with(player)
+                            );
+                        });
+                    });
+                    ctx.setPacketHandled(true);
+                })
                 .add();
 
+        //server → client: SyncSanityPacket
         INSTANCE.messageBuilder(SyncSanityPacket.class, packetId++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(SyncSanityPacket::encode)
                 .decoder(SyncSanityPacket::decode)
-                .consumerMainThread(SyncSanityPacket::handle)
+                .consumerMainThread((msg, ctx) -> {
+                    com.logan.horrormod.client.ClientSanityData.set(msg.sanity);
+                })
                 .add();
 
     }
@@ -49,4 +60,3 @@ public class ModMessages {
     }
 
 }
-

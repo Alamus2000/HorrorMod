@@ -3,26 +3,25 @@ package com.logan.horrormod.network;
 import com.logan.horrormod.gui.SanityGUI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.minecraftforge.network.NetworkContext;
 
 public class OpenSanityGuiPacket {
+    public OpenSanityGuiPacket() {}
 
-    public OpenSanityGuiPacket() {
+    public static void encode(OpenSanityGuiPacket msg, FriendlyByteBuf buf) {
+        // In this case, there's no data to write, but you could write something if needed
+        // For now, just leave it empty
     }
 
-    public static OpenSanityGuiPacket newPacket(FriendlyByteBuf buf) {
+    public static OpenSanityGuiPacket decode(FriendlyByteBuf buf) {
         return new OpenSanityGuiPacket();
     }
 
-    public void toBytes(FriendlyByteBuf buf) {
-        // No data to write
-    }
-
-    public static void handle(OpenSanityGuiPacket message, CustomPayloadEvent.Context context) {
+    public static void handle(OpenSanityGuiPacket msg, NetworkContext ctx) {
+        // Handle the packet (opening the GUI)
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null) {
-            mc.setScreen(new SanityGUI(mc.player)); // Open the Sanity GUI
+            mc.setScreen(new SanityGUI(mc.player));
         }
     }
 }
-

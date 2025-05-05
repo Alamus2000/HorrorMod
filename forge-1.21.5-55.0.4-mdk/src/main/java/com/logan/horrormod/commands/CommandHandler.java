@@ -2,7 +2,6 @@ package com.logan.horrormod.commands;
 
 import com.logan.horrormod.network.ModMessages;
 import com.logan.horrormod.network.OpenSanityGuiPacket;
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;

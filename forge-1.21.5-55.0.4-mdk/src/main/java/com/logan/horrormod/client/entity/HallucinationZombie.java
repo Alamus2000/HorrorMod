@@ -5,7 +5,10 @@ import net.minecraft.client.multiplayer.ClientLevel;
 
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.EntityType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class HallucinationZombie extends Zombie {
     public HallucinationZombie(ClientLevel level) {
         super(EntityType.ZOMBIE, level);

@@ -2,26 +2,14 @@ package com.logan.horrormod;
 
 import com.logan.horrormod.item.ModItems;
 import com.logan.horrormod.block.ModBlocks;
-import com.logan.horrormod.client.ClientSanityEffects;
 import com.logan.horrormod.network.ModMessages;
-import com.logan.horrormod.network.OpenSanityGuiPacket;
 import com.logan.horrormod.network.SoundEventsRegistry;
-import net.minecraft.world.level.block.Block;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraft.commands.Commands;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-
-import static com.mojang.text2speech.Narrator.LOGGER;
 
 @Mod(HorrorMod.MOD_ID)
 public class HorrorMod {
@@ -40,13 +28,14 @@ public class HorrorMod {
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
-        ModMessages.register();
-
+        ModMessages.registerCommon(); // server-safe only
     }
+
 
 
     private void clientSetup(final FMLClientSetupEvent event) {
-        LOGGER.info("Client setup completed.");
+
     }
+
 
 }
